@@ -1,6 +1,7 @@
 package dev.kamenivska.myapplication.feature.testbreath
 
 import androidx.lifecycle.viewModelScope
+import dev.kamenivska.myapplication.domain.user.SetUserBreathHoldUseCase
 import dev.kamenivska.myapplication.main.BaseViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -10,7 +11,9 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class TestBreathViewModel : BaseViewModel() {
+class TestBreathViewModel(
+    private val setUserBreathHoldUseCase: SetUserBreathHoldUseCase,
+): BaseViewModel() {
 
     private val _timer = MutableStateFlow(0L)
     val timer = _timer.asStateFlow()
@@ -23,6 +26,7 @@ class TestBreathViewModel : BaseViewModel() {
     fun updateTimerState() = viewModelScope.launch {
         if (timerJob != null) {
             timerJob?.cancel()
+            setUserBreathHoldUseCase(timer.value)
             _showSuccessDialog.emit(Unit)
         } else {
             timerJob = launch {

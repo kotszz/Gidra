@@ -3,6 +3,7 @@ package dev.kamenivska.myapplication.main.navigation.main
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
+import dev.kamenivska.myapplication.feature.calendar.CalendarScreen
 import dev.kamenivska.myapplication.feature.coaching.CoachingScreen
 import dev.kamenivska.myapplication.feature.home.HomeScreen
 import dev.kamenivska.myapplication.feature.logbook.LogbookScreen
@@ -13,7 +14,11 @@ import dev.kamenivska.myapplication.main.navigation.train.TrainScreen
 fun NavGraphBuilder.mainGraph(
     navController: NavHostController
 ) {
-    homeScreen()
+    homeScreen(
+        navigateToCalendar = {
+            navController.navigate(Screen.CalendarScreen.route)
+        }
+    )
 
     trainScreen()
 
@@ -22,13 +27,21 @@ fun NavGraphBuilder.mainGraph(
     coachingScreen()
 
     profileScreen()
+
+    calendarScreen(
+        navigateBack = navController::popBackStack
+    )
 }
 
-fun NavGraphBuilder.homeScreen() {
+fun NavGraphBuilder.homeScreen(
+    navigateToCalendar: () -> Unit,
+) {
     composable(
         route = Screen.HomeScreen.route,
     ) {
-        HomeScreen()
+        HomeScreen(
+            navigateToCalendar = navigateToCalendar
+        )
     }
 }
 
@@ -61,5 +74,15 @@ fun NavGraphBuilder.profileScreen() {
         route = Screen.ProfileScreen.route,
     ) {
         ProfileScreen()
+    }
+}
+
+fun NavGraphBuilder.calendarScreen(
+    navigateBack: () -> Unit,
+) {
+    composable(
+        route = Screen.CalendarScreen.route,
+    ) {
+        CalendarScreen(navigateBack = navigateBack)
     }
 }

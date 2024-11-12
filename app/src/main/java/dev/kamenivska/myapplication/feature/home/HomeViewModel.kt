@@ -1,49 +1,58 @@
 package dev.kamenivska.myapplication.feature.home
 
 import androidx.lifecycle.viewModelScope
-import dev.kamenivska.myapplication.feature.home.composable.calendarDays
-import dev.kamenivska.myapplication.feature.home.model.CalendarDay
+import dev.kamenivska.myapplication.data.room.model.Training
+import dev.kamenivska.myapplication.domain.trainings.GetClosestTrainingUseCase
+import dev.kamenivska.myapplication.ui.elements.calendarDays
+import dev.kamenivska.myapplication.main.utils.model.CalendarDay
 import dev.kamenivska.myapplication.main.BaseViewModel
+import dev.kamenivska.myapplication.main.utils.getMonthAndYear
+import dev.kamenivska.myapplication.main.utils.getMonthData
+import dev.kamenivska.myapplication.main.utils.model.CalendarDayUi
+import dev.kamenivska.myapplication.main.utils.model.toUiModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.time.format.TextStyle
-import java.util.Locale
 
-class HomeViewModel: BaseViewModel() {
+class HomeViewModel(
+    getClosestTrainingUseCase: GetClosestTrainingUseCase,
+): BaseViewModel() {
 
-    private val _calendarDaysList: MutableStateFlow<List<CalendarDay>> =
+    private val _calendarDaysList: MutableStateFlow<List<CalendarDayUi>> =
         MutableStateFlow(calendarDays)
     val calendarDaysList = _calendarDaysList.asStateFlow()
 
     private val _currentMonthAndYear = MutableStateFlow("")
     val currentMonthAndYear = _currentMonthAndYear.asStateFlow()
 
+    private val _closestTraining = MutableStateFlow<Training?>(null)
+    val closestTraining = _closestTraining.asStateFlow()
+
+    private val currentDate: LocalDate = LocalDate.now()
+    private var workingDate: LocalDate = currentDate
+
     init {
-        viewModelScope.launch {
-            val currentDate = LocalDate.now()
-            val firstDayOfMonth = currentDate.withDayOfMonth(1)
-            val totalDaysInMonth = currentDate.lengthOfMonth()
+        _calendarDaysList.value = getMonthData(date = workingDate).map { it.toUiModel() }
+        _currentMonthAndYear.value = getMonthAndYear(date = workingDate)
 
-            val dayFormatter = DateTimeFormatter.ofPattern("dd")
-            val monthAndYearFormatter = DateTimeFormatter.ofPattern("MMMM yyyy").withLocale(Locale.ENGLISH)
-            _currentMonthAndYear.emit(currentDate.format(monthAndYearFormatter))
-
-            _calendarDaysList.emit(
-                (0 until totalDaysInMonth).map { dayOffset ->
-                    val date = firstDayOfMonth.plusDays(dayOffset.toLong())
-
-                    CalendarDay(
-                        id = dayOffset,
-                        date = date.format(dayFormatter),
-                        dayOfTheWeek = date.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.ENGLISH),
-                        isCurrent = date == currentDate
-                    )
-                }
-            )
+        viewModelScope.launch(Dispatchers.IO) {
+            _closestTraining.value = getClosestTrainingUseCase()
         }
+    }
+
+
+    fun onPreviousClick() {
+        workingDate = workingDate.minusMonths(1L)
+        _calendarDaysList.value = getMonthData(date = workingDate).map { it.toUiModel() }
+        _currentMonthAndYear.value = getMonthAndYear(date = workingDate)
+    }
+
+    fun onNextClick() {
+        workingDate = workingDate.plusMonths(1L)
+        _calendarDaysList.value = getMonthData(date = workingDate).map { it.toUiModel() }
+        _currentMonthAndYear.value = getMonthAndYear(date = workingDate)
     }
 
 }

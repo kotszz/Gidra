@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "992256062269",
+    "firebase_url": "https://gidra-41736-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "gidra-41736",
+    "storage_bucket": "gidra-41736.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:992256062269:android:6d170458de281a4a20cb54",
+        "android_client_info": {
+          "package_name": "dev.kamenivska.myapplication"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAMZdwYGLndfJZuc3LWRFTJgKH7uVXlXlM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -303,8 +303,8 @@
                         <option name="values">
                           <map>
                             <entry key="assetSourceType" value="FILE" />
-                            <entry key="outputName" value="ic_arrow_left" />
-                            <entry key="sourceFile" value="C:\Users\Kyrylo\Desktop\ic_arrow_left.svg" />
+                            <entry key="outputName" value="ic_flippers" />
+                            <entry key="sourceFile" value="C:\Users\Kyrylo\Desktop\ic_flippers.svg" />
                           </map>
                         </option>
                       </PersistentState>

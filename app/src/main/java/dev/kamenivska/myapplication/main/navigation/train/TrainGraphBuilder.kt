@@ -8,6 +8,7 @@ import androidx.navigation.navArgument
 import dev.kamenivska.myapplication.feature.train.SelectTrainScreen
 import dev.kamenivska.myapplication.feature.train.breathe.BreatheScreen
 import dev.kamenivska.myapplication.feature.train.breathe.pranayama.PranayamaScreen
+import dev.kamenivska.myapplication.feature.train.breathe.tables.TablesScreen
 import dev.kamenivska.myapplication.feature.train.swim.SwimScreen
 import dev.kamenivska.myapplication.feature.train.swim.dynamic.DynamicsScreen
 import dev.kamenivska.myapplication.feature.train.swim.dynamic.subtype.DynamicSubtype
@@ -24,10 +25,15 @@ fun NavGraphBuilder.trainGraph(
 
     breathScreen(
         navigateToPranayama = { navController.navigate(Screen.PranayamaScreen.route) },
+        navigateToTables = { navController.navigate(Screen.TablesScreen.route) },
         navigateBack = navController::popBackStack
     )
 
     pranayamaScreen(
+        navigateBack = navController::popBackStack
+    )
+
+    tablesScreen(
         navigateBack = navController::popBackStack
     )
 
@@ -64,6 +70,7 @@ fun NavGraphBuilder.selectTrainScreen(
 
 fun NavGraphBuilder.breathScreen(
     navigateToPranayama: () -> Unit,
+    navigateToTables: () -> Unit,
     navigateBack: () -> Unit,
 ) {
     composable(
@@ -71,6 +78,7 @@ fun NavGraphBuilder.breathScreen(
     ) {
         BreatheScreen(
             navigateToPranayama = navigateToPranayama,
+            navigateToTables = navigateToTables,
             navigateBack = navigateBack,
         )
     }
@@ -130,6 +138,18 @@ fun NavGraphBuilder.pranayamaScreen(
         route = Screen.PranayamaScreen.route,
     ) {
         PranayamaScreen(
+            navigateBack = navigateBack,
+        )
+    }
+}
+
+fun NavGraphBuilder.tablesScreen(
+    navigateBack: () -> Unit,
+) {
+    composable(
+        route = Screen.TablesScreen.route,
+    ) {
+        TablesScreen(
             navigateBack = navigateBack,
         )
     }

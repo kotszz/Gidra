@@ -6,13 +6,13 @@ import androidx.compose.ui.unit.Dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import dev.kamenivska.myapplication.main.navigation.Screen
-import dev.kamenivska.myapplication.main.navigation.main.mainGraph
 
 @Composable
 fun AuthNavGraph(
     modifier: Modifier = Modifier,
     navController: NavHostController,
     navigateToMain: () -> Unit,
+    navigateToTestBreath: () -> Unit,
     navigationBarPadding: Dp,
 ) {
     NavHost(
@@ -23,6 +23,7 @@ fun AuthNavGraph(
         authGraph(
             navController = navController,
             navigateToMain = navigateToMain,
+            navigateToTestBreath = navigateToTestBreath,
             navigationBarPadding = navigationBarPadding,
         )
     }

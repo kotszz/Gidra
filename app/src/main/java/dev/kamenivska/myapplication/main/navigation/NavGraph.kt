@@ -17,13 +17,23 @@ fun NavGraph(
     ) {
         splash(
             continueNavigation = {
-                navController.navigate(Screen.AuthScreen.route)
+                navController.navigate(it)
             },
+        )
+
+        testBreathScreen(
+            navigateBack = navController::popBackStack,
+            onStartExperienceClick = {
+                navController.navigate(Screen.MainScreen.route)
+            }
         )
 
         authScreenFlow(
             navigateToMain = {
                 navController.navigate(Screen.MainScreen.route)
+            },
+            navigateToTestBreath = {
+                navController.navigate(Screen.TestBreathScreen.route)
             }
         )
 

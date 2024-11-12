@@ -7,13 +7,13 @@ import androidx.navigation.compose.composable
 import dev.kamenivska.myapplication.feature.auth.signin.ForgotPasswordScreen
 import dev.kamenivska.myapplication.feature.auth.signin.SignInScreen
 import dev.kamenivska.myapplication.feature.auth.signup.SignUpScreen
-import dev.kamenivska.myapplication.feature.testbreath.TestBreathScreen
 import dev.kamenivska.myapplication.feature.welcome.WelcomeScreen
 import dev.kamenivska.myapplication.main.navigation.Screen
 
 fun NavGraphBuilder.authGraph(
     navController: NavHostController,
-    navigateToMain: ()-> Unit,
+    navigateToMain: () -> Unit,
+    navigateToTestBreath: () -> Unit,
     navigationBarPadding: Dp,
 ) {
     welcomeScreen(
@@ -29,25 +29,19 @@ fun NavGraphBuilder.authGraph(
         },
         navigateToForgotPassword = {
             navController.navigate(Screen.ForgotPasswordScreen.route)
-        }
+        },
+        navigateToMain = navigateToMain
     )
 
     signUpScreen(
         navigateToSignIn = {
             navController.navigate(Screen.SignInScreen.route)
         },
-        navigateToTestBreath = {
-            navController.navigate(Screen.TestBreathScreen.route)
-        },
+        navigateToTestBreath = navigateToTestBreath
     )
 
     forgotPasswordScreen(
         navigateBack = navController::popBackStack
-    )
-
-    testBreathScreen(
-        navigateBack = navController::popBackStack,
-        onStartExperienceClick = navigateToMain
     )
 }
 
@@ -68,6 +62,7 @@ fun NavGraphBuilder.welcomeScreen(
 fun NavGraphBuilder.signInScreen(
     navigateToSignUp: () -> Unit,
     navigateToForgotPassword: () -> Unit,
+    navigateToMain: () -> Unit,
 ) {
     composable(
         route = Screen.SignInScreen.route,
@@ -75,6 +70,7 @@ fun NavGraphBuilder.signInScreen(
         SignInScreen(
             navigateToSignUp = navigateToSignUp,
             navigateToForgotPassword = navigateToForgotPassword,
+            navigateToMain = navigateToMain,
         )
     }
 }
@@ -100,19 +96,5 @@ fun NavGraphBuilder.forgotPasswordScreen(
         route = Screen.ForgotPasswordScreen.route,
     ) {
         ForgotPasswordScreen(navigateBack = navigateBack)
-    }
-}
-
-fun NavGraphBuilder.testBreathScreen(
-    navigateBack: () -> Unit,
-    onStartExperienceClick: () -> Unit,
-) {
-    composable(
-        route = Screen.TestBreathScreen.route,
-    ) {
-        TestBreathScreen(
-            navigateBack = navigateBack,
-            onStartExperienceClick = onStartExperienceClick,
-        )
     }
 }

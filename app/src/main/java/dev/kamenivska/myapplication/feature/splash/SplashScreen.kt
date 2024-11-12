@@ -19,7 +19,7 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SplashScreen(
-    continueNavigation: () -> Unit,
+    continueNavigation: (String) -> Unit,
 ) {
     val viewModel: SplashViewModel = koinViewModel()
 
@@ -29,7 +29,7 @@ fun SplashScreen(
 
     LaunchedEffect(Unit) {
         viewModel.splashNavigation.collect {
-            continueNavigation()
+            continueNavigation(it)
         }
     }
 

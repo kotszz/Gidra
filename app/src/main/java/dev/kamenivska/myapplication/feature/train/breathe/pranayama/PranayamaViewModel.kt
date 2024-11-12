@@ -17,7 +17,7 @@ class PranayamaViewModel: BaseViewModel() {
     private val _currentProgressState = MutableStateFlow<String?>(null)
     val currentProgressState = _currentProgressState.asStateFlow()
 
-    var pranayamaJob: Job? = null
+    private var pranayamaJob: Job? = null
 
     init {
         viewModelScope.launch {

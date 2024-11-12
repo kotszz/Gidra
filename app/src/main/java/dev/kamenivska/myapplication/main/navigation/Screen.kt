@@ -14,6 +14,7 @@ sealed class Screen(val route: String) {
     //Main
     data object MainScreen : Screen("main_screen")
     data object HomeScreen : Screen("home_screen")
+    data object CalendarScreen : Screen("calendar_screen")
     data object TrainScreen : Screen("train_screen")
     data object LogbookScreen : Screen("logbook_screen")
     data object CoachingScreen : Screen("coaching_screen")
@@ -23,6 +24,7 @@ sealed class Screen(val route: String) {
 
     data object BreatheScreen : Screen("breath_screen")
     data object PranayamaScreen : Screen("pranayama_screen")
+    data object TablesScreen : Screen("tables_screen")
 
     data object SwimScreen : Screen("swim_screen")
     data object DynamicsScreen : Screen("dynamics_screen")

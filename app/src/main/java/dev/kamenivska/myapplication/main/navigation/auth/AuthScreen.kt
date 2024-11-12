@@ -10,12 +10,14 @@ import androidx.navigation.compose.rememberNavController
 fun AuthScreen(
     modifier: Modifier = Modifier,
     navigateToMain: () -> Unit,
+    navigateToTestBreath: () -> Unit,
 ) {
     Scaffold(modifier = modifier) { innerPadding ->
         AuthNavGraph(
             modifier = Modifier.padding(innerPadding),
             navController = rememberNavController(),
             navigateToMain = navigateToMain,
+            navigateToTestBreath = navigateToTestBreath,
             navigationBarPadding = innerPadding.calculateBottomPadding()
         )
     }

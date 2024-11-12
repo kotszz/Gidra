@@ -61,39 +61,45 @@ fun MainScreen(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
             ) {
-                Box(
-                    modifier = Modifier
-                        .height(IntrinsicSize.Max)
-                ) {
-                    Image(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .absoluteOffset(0.dp, 1.dp),
-                        painter = painterResource(R.drawable.bg_bottom_navigation),
-                        contentScale = ContentScale.FillWidth,
-                        contentDescription = null,
-                    )
+                Spacer(modifier = Modifier.weight(1f))
 
-                    Row(   
+                if (
+                    navItems.any { it.route == currentRoute }
+                ) {
+                    Box(
                         modifier = Modifier
-                            .fillMaxHeight()
-                            .padding(horizontal = 24.dp),
-                        verticalAlignment = Alignment.CenterVertically
+                            .height(IntrinsicSize.Max),
                     ) {
-                        navItems.forEach { item ->
-                            NavigationItem(
-                                navigationItem = item,
-                                isSelected = item.route == currentRoute
-                            )
+                        Image(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .absoluteOffset(0.dp, 1.dp),
+                            painter = painterResource(R.drawable.bg_bottom_navigation),
+                            contentScale = ContentScale.FillWidth,
+                            contentDescription = null,
+                        )
+
+                        Row(
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .padding(horizontal = 24.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            navItems.forEach { item ->
+                                NavigationItem(
+                                    navigationItem = item,
+                                    isSelected = item.route == currentRoute
+                                )
+                            }
                         }
                     }
-                }
 
-                Spacer(modifier = Modifier
-                    .fillMaxWidth()
-                    .height(innerPadding.calculateBottomPadding())
-                    .background(PrimaryColor)
-                )
+                    Spacer(modifier = Modifier
+                        .fillMaxWidth()
+                        .height(innerPadding.calculateBottomPadding())
+                        .background(PrimaryColor)
+                    )
+                }
             }
         }
     }

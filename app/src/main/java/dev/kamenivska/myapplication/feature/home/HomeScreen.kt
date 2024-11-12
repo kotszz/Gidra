@@ -2,6 +2,7 @@ package dev.kamenivska.myapplication.feature.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -33,7 +34,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.kamenivska.myapplication.R
-import dev.kamenivska.myapplication.feature.home.composable.CalendarView
+import dev.kamenivska.myapplication.data.room.model.TrainingType
+import dev.kamenivska.myapplication.main.utils.getDayMonthYear
+import dev.kamenivska.myapplication.ui.elements.CalendarView
 import dev.kamenivska.myapplication.ui.elements.GidraResizableButton
 import dev.kamenivska.myapplication.ui.theme.DefaultBackground
 import dev.kamenivska.myapplication.ui.theme.DialogBackground
@@ -42,57 +45,76 @@ import dev.kamenivska.myapplication.ui.theme.Poppins
 import dev.kamenivska.myapplication.ui.theme.PrimaryColor
 import dev.kamenivska.myapplication.ui.theme.TextGrey
 import org.koin.androidx.compose.koinViewModel
+import java.time.format.TextStyle
+import java.util.Locale
 
 @Composable
 fun HomeScreen(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    navigateToCalendar: () -> Unit = {},
 ) {
 
     val viewModel: HomeViewModel = koinViewModel()
     val calendarDays by viewModel.calendarDaysList.collectAsStateWithLifecycle()
     val monthAndYear by viewModel.currentMonthAndYear.collectAsStateWithLifecycle()
+    val closestTraining by viewModel.closestTraining.collectAsStateWithLifecycle()
 
     Column(
         modifier = modifier
             .verticalScroll(rememberScrollState())
     ) {
-        Row(
-            modifier = Modifier
-                .padding(top = 32.dp, start = 32.dp, end = 32.dp)
-                .fillMaxWidth()
-                .background(PrimaryColor, RoundedCornerShape(16.dp)),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Spacer(modifier = Modifier.size(28.dp))
-            Text(
-                modifier = Modifier.padding(vertical = 16.dp),
-                text = "Up Next",
-                fontFamily = Outfit,
-                fontWeight = FontWeight.Bold,
-                fontSize = 16.sp,
-                lineHeight = 20.sp,
-                color = DefaultBackground,
-            )
-            Spacer(modifier = Modifier.weight(1f))
-            Image(
-                painter = painterResource(R.drawable.ic_crab),
-                contentDescription = null
-            )
-            Text(
-                modifier = Modifier.padding(horizontal = 16.dp),
-                text = "THU 04/08/23",
-                fontFamily = Poppins,
-                fontWeight = FontWeight.Normal,
-                fontSize = 10.sp,
-                lineHeight = 15.sp,
-                color = DefaultBackground,
-            )
-            Image(
-                painter = painterResource(R.drawable.ic_chevron_right),
-                contentDescription = null,
-                colorFilter = ColorFilter.tint(DefaultBackground)
-            )
-            Spacer(modifier = Modifier.size(28.dp))
+
+        closestTraining?.let {
+            Row(
+                modifier = Modifier
+                    .padding(top = 32.dp, start = 32.dp, end = 32.dp)
+                    .fillMaxWidth()
+                    .background(PrimaryColor, RoundedCornerShape(16.dp)),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Spacer(modifier = Modifier.size(28.dp))
+                Text(
+                    modifier = Modifier.padding(vertical = 16.dp),
+                    text = "Up Next",
+                    fontFamily = Outfit,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp,
+                    lineHeight = 20.sp,
+                    color = DefaultBackground,
+                )
+                Spacer(modifier = Modifier.weight(1f))
+                Image(
+                    modifier = Modifier.size(20.dp),
+                    painter = when(it.type) {
+                        TrainingType.DYN -> painterResource(R.drawable.ic_crab)
+                        TrainingType.DYNB -> painterResource(R.drawable.ic_flippers)
+                        TrainingType.COACHING -> painterResource(R.drawable.ic_coaching)
+                        TrainingType.STA -> painterResource(R.drawable.ic_lungs)
+                        TrainingType.DNF -> painterResource(R.drawable.ic_mask)
+                    },
+                    contentDescription = null,
+                    colorFilter = ColorFilter.tint(color = DefaultBackground),
+                )
+                Text(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    text = it.date.run {
+                        dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.ENGLISH).uppercase() +
+                                " " + getDayMonthYear()
+                    },
+                    fontFamily = Poppins,
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 10.sp,
+                    lineHeight = 15.sp,
+                    color = DefaultBackground,
+                )
+                Image(
+                    painter = painterResource(R.drawable.ic_chevron_right),
+                    contentDescription = null,
+                    colorFilter = ColorFilter.tint(DefaultBackground)
+                )
+                Spacer(modifier = Modifier.size(28.dp))
+            }
+
         }
 
         Column(
@@ -104,12 +126,17 @@ fun HomeScreen(
                     RoundedCornerShape(16.dp)
                 )
         ) {
+            Spacer(modifier = Modifier.size(8.dp))
             Row(
                 modifier = Modifier.padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
-                    modifier = Modifier.size(12.dp),
+                    modifier = Modifier
+                        .size(12.dp)
+                        .clickable {
+                            viewModel.onPreviousClick()
+                        },
                     painter = painterResource(R.drawable.ic_chevron_left),
                     contentDescription = null,
                 )
@@ -125,14 +152,23 @@ fun HomeScreen(
                 )
 
                 Image(
-                    modifier = Modifier.size(12.dp),
+                    modifier = Modifier
+                        .size(12.dp)
+                        .clickable {
+                            viewModel.onNextClick()
+                        },
                     painter = painterResource(R.drawable.ic_chevron_right),
                     contentDescription = null,
                 )
 
                 Spacer(modifier = Modifier.weight(1F))
 
-                Box(modifier = Modifier.background(PrimaryColor, CircleShape)) {
+                Box(
+                    modifier = Modifier
+                        .background(PrimaryColor, CircleShape)
+                        .clickable(onClick = navigateToCalendar)
+
+                ) {
                     Image(
                         modifier = Modifier.padding(4.dp),
                         painter = painterResource(R.drawable.ic_plus),
@@ -142,7 +178,7 @@ fun HomeScreen(
             }
 
             CalendarView(
-                modifier = Modifier.padding(bottom = 8.dp, start = 16.dp, end = 16.dp),
+                modifier = Modifier.padding(bottom = 24.dp, start = 16.dp, end = 16.dp),
                 calendarDays = calendarDays
             )
         }
